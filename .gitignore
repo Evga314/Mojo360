@@ -10,3 +10,5 @@ app_pojavlauncher/.cxx/
 .vs/
 /curseforge_key.txt
 /app_pojavlauncher/libs/ltw-release.aar
+# LTW + Mesa из nightly, см. scripts/fetch_prebuilt_renderers.py
+/app_pojavlauncher/libs/prebuilt-renderers.aar
