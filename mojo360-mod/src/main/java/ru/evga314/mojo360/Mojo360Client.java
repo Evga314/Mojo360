@@ -23,6 +23,8 @@ public class Mojo360Client implements ClientModInitializer {
         LOGGER.info("[mojo360] start, enabled={}, debug={}", Mojo360Config.isEnabled(), Mojo360Config.isDebug());
         // рукопожатие: ставим флаг в нативной памяти лаунчера
         AnalogBridge.setEnabled(Mojo360Config.isEnabled());
+        // игра закрылась -> флаг снят, лаунчер снова шлёт WASD
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> AnalogBridge.setEnabled(false), "mojo360-unregister"));
     }
 
     /** Лог только при включённой отладке. */

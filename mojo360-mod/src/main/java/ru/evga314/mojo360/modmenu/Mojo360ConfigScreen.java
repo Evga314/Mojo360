@@ -55,7 +55,8 @@ public final class Mojo360ConfigScreen extends Screen {
 
     private static Component statusText() {
         AnalogBridge.State s = AnalogBridge.getState();
-        if (s == AnalogBridge.State.READY && !AnalogBridge.isActive()) {
+        // выключен в настройках -> не пугаем «не запущен»
+        if (!AnalogBridge.isActive() && (s == AnalogBridge.State.READY || s == AnalogBridge.State.NOT_TRIED)) {
             return Component.translatable("mojo360.status.off");
         }
         return Component.translatable("mojo360.status." + s.name().toLowerCase(java.util.Locale.ROOT),
