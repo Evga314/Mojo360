@@ -2,11 +2,11 @@ package ru.evga314.mojo360.bridge;
 
 import java.io.File;
 
+import git.mojo.api.AnalogMovement;
 import ru.evga314.mojo360.Mojo360Client;
 
 /**
- * Связь с libpojavexec MojoLauncher (analog_bridge.c).
- * Имя класса и методов = имена JNI-символов, не переименовывать.
+ * Наша обёртка над общим API git.mojo.api.AnalogMovement: загрузка либы, рукопожатие, состояние.
  * Нет либы / нет метода -> молча ничего не делаем (не Mojo или старый Mojo).
  */
 public final class AnalogBridge {
@@ -29,12 +29,6 @@ public final class AnalogBridge {
     private AnalogBridge() {
     }
 
-    private static native int registerAnalogMovement();
-
-    private static native void unregisterAnalogMovement();
-
-    private static native long pollAnalogMovement();
-
     /** Вкл/выкл флаг в нативной памяти. Можно звать много раз. */
     public static synchronized void setEnabled(boolean on) {
         if (on) register();
@@ -45,7 +39,7 @@ public final class AnalogBridge {
         if (registered) return;
         if (!ensureLoaded()) return;
         try {
-            apiVersion = registerAnalogMovement();
+            apiVersion = AnalogMovement.registerAnalogMovement();
         } catch (UnsatisfiedLinkError e) {
             state = State.NO_METHOD;
             Mojo360Client.LOGGER.info("[mojo360] handshake: launcher has no analog bridge, idle");
@@ -65,14 +59,14 @@ public final class AnalogBridge {
         if (!registered) return;
         registered = false;
         try {
-            unregisterAnalogMovement();
+            AnalogMovement.unregisterAnalogMovement();
         } catch (UnsatisfiedLinkError ignored) {
             // раз register прошёл, сюда не попадём
         }
         Mojo360Client.LOGGER.info("[mojo360] unregistered, joystick -> WASD");
     }
 
-    /** Грузим libpojavexec в загрузчик этого класса, иначе native не свяжутся. */
+    /** Грузим libpojavexec в загрузчик модов (Knot), иначе native AnalogMovement не свяжутся. */
     private static boolean ensureLoaded() {
         if (loadTried) return loaded;
         loadTried = true;
@@ -116,11 +110,11 @@ public final class AnalogBridge {
         return apiVersion;
     }
 
-    /** x: вправо +, y: вперёд +. Упаковку см. pack_xy в analog_bridge.c. */
+    /** x: вправо +, y: вперёд +. */
     public static float[] poll(float[] out) {
-        long packed = pollAnalogMovement();
-        out[0] = Float.intBitsToFloat((int) (packed >>> 32));
-        out[1] = Float.intBitsToFloat((int) packed);
+        long packed = AnalogMovement.pollAnalogMovement();
+        out[0] = AnalogMovement.x(packed);
+        out[1] = AnalogMovement.y(packed);
         return out;
     }
 }
