@@ -2,6 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
     <string name="app_short_name">MJLauncher</string>
+    <!-- имя форка на иконке, не переводится -->
+    <string name="mojo360_app_label" translatable="false">Mojo 360</string>
 
     <!-- Action bar part -->
 
