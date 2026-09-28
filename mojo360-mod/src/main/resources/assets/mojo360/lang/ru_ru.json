@@ -1,5 +1,5 @@
 {
-	"mojo360.config.title": "Mojo 360",
+	"mojo360.config.title": "Mojo joystick 360",
 	"mojo360.config.enabled": "Движение 360°: %s",
 	"mojo360.config.use_strength": "Скорость от наклона стика: %s",
 	"mojo360.config.debug": "Отладочный лог: %s",
