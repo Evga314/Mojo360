@@ -1,0 +1,12 @@
+{
+	"mojo360.config.title": "Mojo 360",
+	"mojo360.config.enabled": "Движение 360°: %s",
+	"mojo360.config.use_strength": "Скорость от наклона стика: %s",
+	"mojo360.config.debug": "Отладочный лог: %s",
+	"mojo360.status.not_tried": "Мост: не запущен",
+	"mojo360.status.no_library": "Мост: не MojoLauncher, мод бездействует",
+	"mojo360.status.no_method": "Мост: лаунчер без поддержки 360°",
+	"mojo360.status.no_launcher": "Мост: сторона лаунчера не видна",
+	"mojo360.status.ready": "Мост: активен (api v%s)",
+	"mojo360.status.off": "Мост: выключен, джойстик шлёт WASD"
+}

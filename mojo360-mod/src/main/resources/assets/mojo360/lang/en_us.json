@@ -1,0 +1,12 @@
+{
+	"mojo360.config.title": "Mojo 360",
+	"mojo360.config.enabled": "360° movement: %s",
+	"mojo360.config.use_strength": "Speed from stick tilt: %s",
+	"mojo360.config.debug": "Debug log: %s",
+	"mojo360.status.not_tried": "Bridge: not started",
+	"mojo360.status.no_library": "Bridge: not MojoLauncher, mod is idle",
+	"mojo360.status.no_method": "Bridge: launcher has no 360° support",
+	"mojo360.status.no_launcher": "Bridge: launcher side not visible",
+	"mojo360.status.ready": "Bridge: active (api v%s)",
+	"mojo360.status.off": "Bridge: off, joystick sends WASD"
+}
