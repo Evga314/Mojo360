@@ -58,7 +58,21 @@ android {
         abortOnError false
     }
 
+    // ключ форка: app_pojavlauncher/mojo360-release.properties (в .gitignore)
+    // storeFile=..., storePassword=..., keyAlias=..., keyPassword=...
+    def mojo360Props = new Properties()
+    def mojo360PropsFile = file("mojo360-release.properties")
+    if (mojo360PropsFile.exists()) mojo360PropsFile.withInputStream { mojo360Props.load(it) }
+
     signingConfigs {
+        mojo360Release {
+            if (!mojo360Props.isEmpty()) {
+                storeFile file(mojo360Props['storeFile'])
+                storePassword mojo360Props['storePassword']
+                keyAlias mojo360Props['keyAlias']
+                keyPassword mojo360Props['keyPassword']
+            }
+        }
         customDebug {
             storeFile file("debug.keystore")
             storePassword "android"
@@ -80,7 +94,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "git.artdeell.mjlaunch"
+        applicationId "git.Evga314.mojo360"
         minSdkVersion 21
         targetSdkVersion 36
         versionCode getDateSeconds()
@@ -110,8 +124,8 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.customDebug
-            resValue 'string', 'application_package', 'git.artdeell.mjlaunch.debug'
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mjlaunch.scoped.gamefolder.debug'
+            resValue 'string', 'application_package', 'git.Evga314.mojo360.debug'
+            resValue 'string', 'storageProviderAuthorities', 'git.Evga314.mojo360.scoped.gamefolder.debug'
         }
         proguard {
             initWith debug
@@ -131,8 +145,10 @@ android {
             // defaultConfig already set
             // multiDexEnabled = true
             // debuggable = true
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mjlaunch.scoped.gamefolder'
-            resValue 'string', 'application_package', 'git.artdeell.mjlaunch'
+            resValue 'string', 'storageProviderAuthorities', 'git.Evga314.mojo360.scoped.gamefolder'
+            resValue 'string', 'application_package', 'git.Evga314.mojo360'
+            // подпись форка, если ключ есть
+            if (!mojo360Props.isEmpty()) signingConfig signingConfigs.mojo360Release
         }
         gplay {
             initWith release

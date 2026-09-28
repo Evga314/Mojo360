@@ -12,3 +12,7 @@ app_pojavlauncher/.cxx/
 /app_pojavlauncher/libs/ltw-release.aar
 # LTW + Mesa из nightly, см. scripts/fetch_prebuilt_renderers.py
 /app_pojavlauncher/libs/prebuilt-renderers.aar
+
+# ключ подписи форка, никогда не коммитить
+/app_pojavlauncher/mojo360-release.properties
+/app_pojavlauncher/mojo360-release.jks
