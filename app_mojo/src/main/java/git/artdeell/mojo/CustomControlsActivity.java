@@ -57,7 +57,8 @@ public class CustomControlsActivity extends BaseActivity implements EditorExitab
 				case 3: mControlLayout.openLoadDialog(); break;
 				case 4: mControlLayout.openSaveDialog(this); break;
 				case 5: mControlLayout.openSetDefaultDialog(); break;
-				case 6: // Saving the currently shown control
+				case 6: mControlLayout.openExtraOptionsList(); break;
+				case 7: // Saving the currently shown control
 					try {
 						Uri contentUri = DocumentsContract.buildDocumentUri(getString(R.string.storageProviderAuthorities), mControlLayout.saveToDirectory(mControlLayout.mLayoutFileName));
 

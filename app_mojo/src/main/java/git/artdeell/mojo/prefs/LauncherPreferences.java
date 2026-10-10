@@ -129,6 +129,9 @@ public class LauncherPreferences {
         PREF_SHOW_MEMORY_WARNING_DIALOG = DEFAULT_PREF.getBoolean("showMemoryWarning", true);
         PREF_BUTTON_TRANSPARENCY = (short) DEFAULT_PREF.getInt("buttonTransparency", 100);
         PREF_UBWC_WORKAROUND = DEFAULT_PREF.getBoolean("ubwcWorkaround", false);
+        PREF_EDITOR_GRID = DEFAULT_PREF.getBoolean("extraEditorGrid", false);
+        PREF_EDITOR_BUTTON_ALIGN = DEFAULT_PREF.getBoolean("extraEditorAlign", true);
+        PREF_EDITOR_HOLD_TO_MOVE = DEFAULT_PREF.getBoolean("extraEditorHold", false);
 
         String argLwjglLibname = "-Dorg.lwjgl.opengl.libname=";
         for (String arg : JREUtils.parseJavaArguments(PREF_CUSTOM_JAVA_ARGS)) {
