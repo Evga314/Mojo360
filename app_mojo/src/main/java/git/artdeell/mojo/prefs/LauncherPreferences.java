@@ -48,6 +48,10 @@ public class LauncherPreferences {
     public static boolean PREF_JAVA_SANDBOX = true;
     public static float PREF_SCALE_FACTOR = 1f;
 
+    public static boolean PREF_EDITOR_GRID = false;
+    public static boolean PREF_EDITOR_BUTTON_ALIGN = true;
+    public static boolean PREF_EDITOR_HOLD_TO_MOVE = false;
+
     public static boolean PREF_ENABLE_GYRO = false;
     public static float PREF_GYRO_SENSITIVITY = 1f;
     public static int PREF_GYRO_SAMPLE_RATE = 16;

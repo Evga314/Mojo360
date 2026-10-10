@@ -7,8 +7,8 @@
         <item name="2">@string/global_load</item>
         <item name="3">@string/global_save</item>
         <item name="4">@string/customctrl_selectdefault</item>
-        <item name="5">@string/customctrl_editor_exit</item>
-        <item name="6">@string/customctrl_extra_options</item>
+        <item name="5">@string-array/customctrl_extra_options</item>
+        <item name="6">@string/customctrl_editor_exit</item>
     </string-array>
 
     <string-array name="menu_customcontrol_customactivity">
@@ -18,7 +18,8 @@
         <item name="3">@string/global_load</item>
         <item name="4">@string/global_save</item>
         <item name="5">@string/customctrl_selectdefault</item>
-        <item name="6">@string/customctrl_export</item>
+        <item name="6">@string-array/customctrl_export</item>
+        <item name="7">@string/customctrl_extra_options</item>
     </string-array>
 
     <string-array name="menu_ingame">
