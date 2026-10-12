@@ -365,6 +365,7 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
             private final Handler mHoldHandler = new Handler(Looper.getMainLooper());
             private final Runnable mEnableMove = () -> {
                 mCanMove = true;
+                getControlView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             };
             private float downX, downY;
             private float downRawX, downRawY;
@@ -397,6 +398,9 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
                     case MotionEvent.ACTION_MOVE:
                         if (Math.abs(event.getRawX() - downRawX) > 8 || Math.abs(event.getRawY() - downRawY) > 8)
                             mCanTriggerLongClick = false;
+                            if(!mCanMove && Math.abs(event.getRawX() - downRawX) > 20 || Math.abs(event.getRawY() - downRawY) > 20){
+                                mHoldHandler.removeCallbacks(mEnableMove);
+                            }
                         if(!mCanMove){
                             break;
                         }
@@ -407,6 +411,7 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
                         );
                         break;
                     case MotionEvent.ACTION_UP:
+                        mHoldHandler.removeCallbacks(mEnableMove);
                         if (mCanTriggerLongClick) onLongClick(view);
                         // Internally, setX and setY just set the view translation.
                         // Reset before layout to apply the layout pos correctly.
