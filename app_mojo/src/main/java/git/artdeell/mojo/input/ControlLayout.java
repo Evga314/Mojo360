@@ -245,6 +245,35 @@ public class ControlLayout extends FrameLayout {
 		setModified(false);
 	}
 
+	public void openExtraOptionsList() {
+		boolean[] checked = {
+				LauncherPreferences.PREF_EDITOR_GRID,
+				LauncherPreferences.PREF_EDITOR_BUTTON_ALIGN,
+				LauncherPreferences.PREF_EDITOR_HOLD_TO_MOVE
+		};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		builder.setTitle(R.string.customctrl_extra_options);
+		builder.setMultiChoiceItems(R.array.customctrl_extra_options_list, checked, (dialog, which, isChecked) -> {
+			switch (which) {
+				case 0:
+					LauncherPreferences.PREF_EDITOR_GRID = isChecked;
+					LauncherPreferences.DEFAULT_PREF.edit().putBoolean("extraEditorGrid", isChecked).apply();
+					break;
+				case 1:
+					LauncherPreferences.PREF_EDITOR_BUTTON_ALIGN = isChecked;
+					LauncherPreferences.DEFAULT_PREF.edit().putBoolean("extraEditorAlign", isChecked).apply();
+					break;
+				case 2:
+					LauncherPreferences.PREF_EDITOR_HOLD_TO_MOVE = isChecked;
+					LauncherPreferences.DEFAULT_PREF.edit().putBoolean("extraEditorHold", isChecked).apply();
+					break;
+			}
+		});
+		builder.setPositiveButton(android.R.string.ok, null);
+		builder.show();
+	}
+
 	public void toggleControlVisible(){
 		mControlVisible = !mControlVisible;
 		setControlVisible(mControlVisible);

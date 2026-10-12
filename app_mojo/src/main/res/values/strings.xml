@@ -159,6 +159,9 @@
     <string name="customctrl_export">Export controlmap</string>
 
     <string name="customctrl_extra_options">Extra options</string>
+    <string name="customctrl_grid">Grid</string>
+    <string name="customctrl_align">Button alignment</string>
+    <string name="customctrl_hold_to_move">Move buttons by holding</string>
 
     <string name="main_share_logs">Share log file</string>
     <string name="main_install_jar_file">Execute a .jar</string>

@@ -112,6 +112,9 @@
     <string name="customctrl_selectdefault">Выбрать основную</string>
     <string name="customctrl_export">Поделиться раскладкой</string>
     <string name="customctrl_extra_options">Доп. настройки</string>
+    <string name="customctrl_grid">Сетка</string>
+    <string name="customctrl_align">Выравнивание кнопок</string>
+    <string name="customctrl_hold_to_move">Перемещение кнопок зажатием</string>
     <string name="main_share_logs">Поделиться журналом</string>
     <string name="main_install_jar_file">Запустить .jar</string>
     <string name="main_play">Играть</string>
