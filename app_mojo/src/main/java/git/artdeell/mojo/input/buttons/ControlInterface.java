@@ -13,6 +13,10 @@ import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.HapticFeedbackConstants;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -27,7 +31,7 @@ import git.artdeell.mojo.game.platform.input.PlatformGrabListener;
 import git.artdeell.mojo.game.platform.Platform;
 
 import static git.artdeell.mojo.prefs.LauncherPreferences.PREF_EDITOR_BUTTON_ALIGN;
-
+import static git.artdeell.mojo.prefs.LauncherPreferences.PREF_EDITOR_HOLD_TO_MOVE;
 
 /**
  * Interface injecting custom behavior to a View.
@@ -261,7 +265,7 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
 
         getControlView().setX(x);
         getControlView().setY(y);
-        if (PREF_EDITOR_BUTTON_ALIGN == true) {
+        if (PREF_EDITOR_BUTTON_ALIGN) {
             for (ControlInterface button : ((ControlLayout) getControlView().getParent()).getButtonChildren()) {
                 //Step 1: Filter unwanted buttons
                 if (!canSnap(button)) continue;
@@ -357,6 +361,11 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
     default void injectTouchEventBehavior() {
         getControlView().setOnTouchListener(new View.OnTouchListener() {
             private boolean mCanTriggerLongClick = true;
+            private boolean mCanMove = true;
+            private final Handler mHoldHandler = new Handler(Looper.getMainLooper());
+            private final Runnable mEnableMove = () -> {
+                mCanMove = true;
+            };
             private float downX, downY;
             private float downRawX, downRawY;
 
@@ -376,11 +385,21 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
                         downRawY = event.getRawY();
                         downX = downRawX - view.getX();
                         downY = downRawY - view.getY();
+                        if(PREF_EDITOR_HOLD_TO_MOVE){
+                             mCanMove = false;
+                            mHoldHandler.postDelayed(mEnableMove, 400);// 400 - timeout in ms
+                        }
+                        else {
+                            mCanMove = true;
+                        }
                         break;
 
                     case MotionEvent.ACTION_MOVE:
                         if (Math.abs(event.getRawX() - downRawX) > 8 || Math.abs(event.getRawY() - downRawY) > 8)
                             mCanTriggerLongClick = false;
+                        if(!mCanMove){
+                            break;
+                        }
                         getControlLayoutParent().adaptPanelPosition();
                         snapAndAlign(
                                 MathUtils.clamp(event.getRawX() - downX, 0, getControlLayoutParent().getWidth() - view.getWidth()),
