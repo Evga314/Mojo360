@@ -26,6 +26,7 @@ import git.artdeell.mojo.input.handleview.EditControlSideDialog;
 import git.artdeell.mojo.game.platform.input.PlatformGrabListener;
 import git.artdeell.mojo.game.platform.Platform;
 
+import static git.artdeell.mojo.prefs.LauncherPreferences.PREF_EDITOR_BUTTON_ALIGN;
 
 
 /**
@@ -36,6 +37,7 @@ import git.artdeell.mojo.game.platform.Platform;
 public interface ControlInterface extends View.OnLongClickListener, PlatformGrabListener {
     /**
      * Get this ControlInterface implementation as a View.
+     *
      * @return this
      */
     View getControlView();
@@ -59,11 +61,12 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
     void cloneButton();
 
     default void setVisible(boolean isVisible) {
-        if(getProperties().isHideable)
+        if (getProperties().isHideable)
             getControlView().setVisibility(isVisible ? VISIBLE : GONE);
     }
 
     void handlePressed();
+
     void handleReleased();
 
     /**
@@ -103,7 +106,7 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
     /* This function should be overridden to store the properties */
     @CallSuper
     default void setProperties(ControlData properties, boolean changePos) {
-        if(changePos && !getControlView().isInLayout()) {
+        if (changePos && !getControlView().isInLayout()) {
             getControlView().requestLayout();
         }
     }
@@ -114,19 +117,19 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
     default void setBackground() {
         Drawable drawable = getControlView().getBackground();
         String bitmapTag = getProperties().bitmapTag;
-        if(Tools.isValidString(bitmapTag)) {
+        if (Tools.isValidString(bitmapTag)) {
             LayoutBitmaps storage = getControlLayoutParent().getBitmaps();
             Bitmap bgBitmap = storage.getBitmap(getProperties().bitmapTag);
-            if(drawable instanceof BitmapDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ((BitmapDrawable)drawable).setBitmap(bgBitmap);
-            }else {
+            if (drawable instanceof BitmapDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ((BitmapDrawable) drawable).setBitmap(bgBitmap);
+            } else {
                 drawable = new BitmapDrawable(getControlView().getResources(), bgBitmap);
             }
-        }else {
+        } else {
             GradientDrawable gd = drawable instanceof GradientDrawable ?
                     (GradientDrawable) drawable : new GradientDrawable();
             gd.setColor(getProperties().bgColor);
-            gd.setStroke((int) Tools.dpToPx(getProperties().strokeWidth * (getControlLayoutParent().getLayoutScale()/100f)), getProperties().strokeColor);
+            gd.setStroke((int) Tools.dpToPx(getProperties().strokeWidth * (getControlLayoutParent().getLayoutScale() / 100f)), getProperties().strokeColor);
             gd.setCornerRadius(computeCornerRadius(getProperties().cornerRadius));
             drawable = gd;
         }
@@ -248,61 +251,66 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
      * @param x Coordinate on the x axis
      * @param y Coordinate on the y axis
      */
+
+
     default void snapAndAlign(float x, float y) {
+
         final float MIN_DISTANCE = getSnapDistance();
         String dynamicX = generateDynamicX(x);
         String dynamicY = generateDynamicY(y);
 
         getControlView().setX(x);
         getControlView().setY(y);
+        if (PREF_EDITOR_BUTTON_ALIGN == true) {
+            for (ControlInterface button : ((ControlLayout) getControlView().getParent()).getButtonChildren()) {
+                //Step 1: Filter unwanted buttons
+                if (!canSnap(button)) continue;
 
-        for (ControlInterface button : ((ControlLayout) getControlView().getParent()).getButtonChildren()) {
-            //Step 1: Filter unwanted buttons
-            if (!canSnap(button)) continue;
+                //Step 2: Get Coordinates
+                float button_top = button.getControlView().getY();
+                float button_bottom = button_top + button.getControlView().getHeight();
+                float button_left = button.getControlView().getX();
+                float button_right = button_left + button.getControlView().getWidth();
 
-            //Step 2: Get Coordinates
-            float button_top = button.getControlView().getY();
-            float button_bottom = button_top + button.getControlView().getHeight();
-            float button_left = button.getControlView().getX();
-            float button_right = button_left + button.getControlView().getWidth();
+                float top = getControlView().getY();
+                float bottom = getControlView().getY() + getControlView().getHeight();
+                float left = getControlView().getX();
+                float right = getControlView().getX() + getControlView().getWidth();
 
-            float top = getControlView().getY();
-            float bottom = getControlView().getY() + getControlView().getHeight();
-            float left = getControlView().getX();
-            float right = getControlView().getX() + getControlView().getWidth();
-
-            //Step 3: For each axis, we try to snap to the nearest
-            if (Math.abs(top - button_bottom) < MIN_DISTANCE) { // Bottom snap
-                dynamicY = applySize(button.getProperties().dynamicY, button) + applySize(" + ${height}", button) + " + ${margin}";
-            } else if (Math.abs(button_top - bottom) < MIN_DISTANCE) { //Top snap
-                dynamicY = applySize(button.getProperties().dynamicY, button) + " - ${height} - ${margin}";
-            }
-            if (!dynamicY.equals(generateDynamicY(getControlView().getY()))) { //If we snapped
-                if (Math.abs(button_left - left) < MIN_DISTANCE) { //Left align snap
-                    dynamicX = applySize(button.getProperties().dynamicX, button);
-                } else if (Math.abs(button_right - right) < MIN_DISTANCE) { //Right align snap
-                    dynamicX = applySize(button.getProperties().dynamicX, button) + applySize(" + ${width}", button) + " - ${width}";
+                //Step 3: For each axis, we try to snap to the nearest
+                if (Math.abs(top - button_bottom) < MIN_DISTANCE) { // Bottom snap
+                    dynamicY = applySize(button.getProperties().dynamicY, button) + applySize(" + ${height}", button) + " + ${margin}";
+                } else if (Math.abs(button_top - bottom) < MIN_DISTANCE) { //Top snap
+                    dynamicY = applySize(button.getProperties().dynamicY, button) + " - ${height} - ${margin}";
                 }
-            }
-
-            if (Math.abs(button_left - right) < MIN_DISTANCE) { //Left snap
-                dynamicX = applySize(button.getProperties().dynamicX, button) + " - ${width} - ${margin}";
-            } else if (Math.abs(left - button_right) < MIN_DISTANCE) { //Right snap
-                dynamicX = applySize(button.getProperties().dynamicX, button) + applySize(" + ${width}", button) + " + ${margin}";
-            }
-            if (!dynamicX.equals(generateDynamicX(getControlView().getX()))) { //If we snapped
-                if (Math.abs(button_top - top) < MIN_DISTANCE) { //Top align snap
-                    dynamicY = applySize(button.getProperties().dynamicY, button);
-                } else if (Math.abs(button_bottom - bottom) < MIN_DISTANCE) { //Bottom align snap
-                    dynamicY = applySize(button.getProperties().dynamicY, button) + applySize(" + ${height}", button) + " - ${height}";
+                if (!dynamicY.equals(generateDynamicY(getControlView().getY()))) { //If we snapped
+                    if (Math.abs(button_left - left) < MIN_DISTANCE) { //Left align snap
+                        dynamicX = applySize(button.getProperties().dynamicX, button);
+                    } else if (Math.abs(button_right - right) < MIN_DISTANCE) { //Right align snap
+                        dynamicX = applySize(button.getProperties().dynamicX, button) + applySize(" + ${width}", button) + " - ${width}";
+                    }
                 }
-            }
 
+                if (Math.abs(button_left - right) < MIN_DISTANCE) { //Left snap
+                    dynamicX = applySize(button.getProperties().dynamicX, button) + " - ${width} - ${margin}";
+                } else if (Math.abs(left - button_right) < MIN_DISTANCE) { //Right snap
+                    dynamicX = applySize(button.getProperties().dynamicX, button) + applySize(" + ${width}", button) + " + ${margin}";
+                }
+                if (!dynamicX.equals(generateDynamicX(getControlView().getX()))) { //If we snapped
+                    if (Math.abs(button_top - top) < MIN_DISTANCE) { //Top align snap
+                        dynamicY = applySize(button.getProperties().dynamicY, button);
+                    } else if (Math.abs(button_bottom - bottom) < MIN_DISTANCE) { //Bottom align snap
+                        dynamicY = applySize(button.getProperties().dynamicY, button) + applySize(" + ${height}", button) + " - ${height}";
+                    }
+                }
+
+            }
         }
 
         setDynamicX(dynamicX);
         setDynamicY(dynamicY);
     }
+
 
     /**
      * Wrapper for multiple injections at once
@@ -332,7 +340,8 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
             }
 
             @Override
-            public void onViewDetachedFromWindow(@NonNull View v) {}
+            public void onViewDetachedFromWindow(@NonNull View v) {
+            }
         });
 
 
@@ -379,7 +388,7 @@ public interface ControlInterface extends View.OnLongClickListener, PlatformGrab
                         );
                         break;
                     case MotionEvent.ACTION_UP:
-                        if(mCanTriggerLongClick) onLongClick(view);
+                        if (mCanTriggerLongClick) onLongClick(view);
                         // Internally, setX and setY just set the view translation.
                         // Reset before layout to apply the layout pos correctly.
                         view.setTranslationX(0);
